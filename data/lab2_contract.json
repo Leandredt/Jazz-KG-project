@@ -1,0 +1,40 @@
+{
+  "lab": "Lab 2 - KB Construction, Alignment & Expansion",
+  "produced_by": "src/kg/ontology.py + src/kg/build_kg.py + src/kg/alignment.py + src/kg/expand_kb.py",
+  "outputs": {
+    "ontology_ttl": "kg_artifacts/ontology.ttl",
+    "initial_kg_ttl": "kg_artifacts/initial_kg.ttl",
+    "alignment_ttl": "kg_artifacts/alignment.ttl",
+    "expanded_nt": "kg_artifacts/expanded.nt"
+  },
+  "ontology_schema": {
+    "namespace": "http://jazz-kg.org/ontology#",
+    "classes": ["jazz:Musician", "jazz:Album", "jazz:RecordLabel", "jazz:Band", "jazz:Location", "jazz:Instrument", "jazz:Genre"],
+    "object_properties": ["jazz:playedBy", "jazz:releasedBy", "jazz:memberOf", "jazz:bornIn", "jazz:hasGenre", "jazz:recordedOn", "jazz:signedWith", "jazz:basedIn", "jazz:plays", "jazz:influencedBy"],
+    "datatype_properties": ["jazz:birthYear", "jazz:deathYear", "jazz:releaseYear", "jazz:wikidataId", "jazz:confidence"]
+  },
+  "resource_namespace": "http://jazz-kg.org/resource/",
+  "expanded_nt_format": "N-Triples (one triple per line)",
+  "alignment_owl_same_as": "owl:sameAs triples link jazz:resource entities to wikidata.org/entity/Q* URIs",
+  "confidence_property": "jazz:confidence (xsd:float, 0.0–1.0)",
+  "predicate_alignment": {
+    "jazz:playedBy": "wdt:P175 (performer)",
+    "jazz:releasedBy": "wdt:P264 (record label)",
+    "jazz:memberOf": "wdt:P463 (member of)",
+    "jazz:bornIn": "wdt:P19 (place of birth)",
+    "jazz:hasGenre": "wdt:P136 (genre)",
+    "jazz:plays": "wdt:P1303 (instrument)",
+    "jazz:influencedBy": "wdt:P737 (influenced by)"
+  },
+  "for_lab3": {
+    "primary_input": "kg_artifacts/expanded.nt",
+    "format": "N-Triples",
+    "triple_count_target": "50000–200000 triples",
+    "entity_namespaces": [
+      "http://jazz-kg.org/resource/",
+      "http://www.wikidata.org/entity/"
+    ],
+    "swrl_hint": "Use jazz:recordedOn and jazz:releasedBy to infer jazz:signedWith via SWRL rule",
+    "kge_hint": "Load expanded.nt as PyKEEN dataset, split 80/10/10 into train/valid/test.txt"
+  }
+}

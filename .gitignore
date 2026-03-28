@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+
+# Virtual environments
+venv/
+venv_ui/
+
+# Large data / generated artifacts
+data/crawler_output.jsonl
+kg_artifacts/expanded.nt
+kg_artifacts/initial_kg.ttl
+kg_artifacts/alignment.ttl
+kg_artifacts/ontology.ttl
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Reports (generated at runtime)
+reports/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# KGE data (large, generated)
+data/kge/
+data/train.txt
+data/valid.txt
+data/test.txt
+
+# Pytest / lib
+.pytest_cache/
+lib/

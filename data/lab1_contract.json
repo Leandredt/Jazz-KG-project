@@ -1,0 +1,63 @@
+{
+  "lab": "Lab 1 - Wikipedia Crawler + NER Pipeline",
+  "produced_by": "src/crawl/crawler.py + src/ie/ner_pipeline.py",
+  "outputs": {
+    "crawler_output_jsonl": "data/crawler_output.jsonl",
+    "extracted_knowledge_csv": "data/extracted_knowledge.csv"
+  },
+  "crawler_output_schema": {
+    "format": "JSONL (one JSON object per line)",
+    "fields": {
+      "url": "string — canonical Wikipedia article URL (https)",
+      "title": "string — article title extracted from <title> tag",
+      "text": "string — clean article text extracted by trafilatura (no HTML)",
+      "word_count": "integer — number of whitespace-separated tokens in text"
+    },
+    "constraints": {
+      "word_count_min": 500,
+      "url_pattern": "https://en.wikipedia.org/wiki/*",
+      "no_duplicate_urls": true
+    }
+  },
+  "entity_types": ["PERSON", "ORG", "GPE", "DATE", "WORK_OF_ART"],
+  "csv_columns": [
+    "entity",
+    "entity_type",
+    "source_url",
+    "context_sentence",
+    "relation_to",
+    "relation_type"
+  ],
+  "csv_column_descriptions": {
+    "entity": "Extracted named entity string (e.g. 'Miles Davis', 'Blue Note Records')",
+    "entity_type": "spaCy entity label — one of PERSON, ORG, GPE, DATE, WORK_OF_ART",
+    "source_url": "Wikipedia URL from which the entity was extracted (matches crawler output)",
+    "context_sentence": "Full sentence where the entity was found",
+    "relation_to": "Target entity of a dependency-extracted relation (empty if no relation found)",
+    "relation_type": "Verb or preposition linking entity to relation_to (empty if no relation)"
+  },
+  "expected_entities_min": 100,
+  "expected_pages_min": 20,
+  "spacy_model": "en_core_web_trf",
+  "jazz_domain": {
+    "musicians": "PERSON entities representing jazz musicians (e.g. Miles Davis, John Coltrane)",
+    "labels": "ORG entities representing music labels (e.g. Blue Note Records, Columbia Records)",
+    "bands_ensembles": "ORG entities representing jazz groups (e.g. Miles Davis Quintet)",
+    "albums": "WORK_OF_ART entities representing recorded albums (e.g. Kind of Blue)",
+    "locations": "GPE entities representing cities and countries (e.g. New Orleans, New York, Chicago)",
+    "dates": "DATE entities representing years or periods (e.g. 1959, the 1950s)",
+    "instruments": "Note: instruments are common nouns (e.g. saxophone, trumpet) and are NOT extracted as named entities; they appear in context_sentence for downstream parsing by Lab 2"
+  },
+  "for_lab2": {
+    "graph_nodes": "Each unique (entity, entity_type) pair is a candidate KG node",
+    "graph_edges": "Rows where relation_to is non-empty define candidate KG edges: entity --[relation_type]--> relation_to",
+    "enrichment_hint": "Use source_url to fetch Wikidata QIDs for entity disambiguation",
+    "recommended_ontology_mapping": {
+      "PERSON": "schema:Person / jazz:Musician",
+      "ORG (label)": "schema:Organization / jazz:RecordLabel",
+      "ORG (band)": "schema:MusicGroup / jazz:Band",
+      "WORK_OF_ART": "schema:MusicAlbum / jazz:Album",
+      "GPE": "schema:Place / jazz:Location"
+    }
+  }
+}

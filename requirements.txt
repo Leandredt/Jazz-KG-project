@@ -1,0 +1,32 @@
+# Jazz Knowledge Graph Project — Python dependencies
+# Install with: pip3 install -r requirements.txt
+
+# Core KG / Semantic Web
+rdflib>=6.3.0
+
+# HTTP clients
+httpx>=0.25.0
+requests>=2.31.0
+
+# Web crawling / text extraction
+trafilatura>=1.6.0
+
+# NLP
+spacy>=3.7.0
+# After install: python3 -m spacy download en_core_web_trf
+
+# Numerical / KGE (TransE uses numpy; PyKEEN is optional)
+numpy>=1.26.0
+# pykeen>=1.10.0   # optional — uncomment if available
+
+# Testing
+pytest>=7.4.0
+
+# Visualization / Notebook / App
+matplotlib>=3.8.0
+networkx>=3.0
+streamlit>=1.30.0
+pyvis>=0.3.2
+jupyter>=1.0.0
+
+# Ontology editing (Protégé used externally; no pip package needed)
