@@ -1,55 +1,27 @@
 # Jazz Knowledge Graph
 
-End-to-end Knowledge Graph pipeline for Jazz music built from Wikipedia + Wikidata.
+End-to-end pipeline that builds a Knowledge Graph for Jazz music from Wikipedia and Wikidata, with a natural language query interface and knowledge graph embeddings.
 
-## Requirements
+## Overview
 
-- Python 3.12 (for the UI and visualization)
-- Python 3.x (for the pipeline)
-
-## Installation
-
-### 1. Pipeline dependencies
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python3 -m spacy download en_core_web_trf
+```
+Wikipedia articles
+    → Crawl & extract text         (httpx + trafilatura, 120 pages)
+    → Named Entity Recognition     (spaCy en_core_web_trf, 600+ entities)
+    → Ontology + RDF triples       (7 classes, 10+ properties, OWL)
+    → Wikidata alignment           (owl:sameAs, ≥50% coverage)
+    → SPARQL expansion             (~50,000 triples)
+    → OWL reasoning                (4 inference rules)
+    → KG Embeddings                (TransE MRR=0.10, DistMult MRR=0.08)
+    → Streamlit app                (NL→SPARQL, graph explorer, stats)
 ```
 
-### 2. UI / visualization dependencies (requires Python 3.12)
+## Streamlit Application
 
-```bash
-python3.12 -m venv venv_ui
-source venv_ui/bin/activate
-pip install -r requirements_ui.txt
-```
-
-## Run the full pipeline
-
-```bash
-source venv/bin/activate
-bash run_pipeline.sh
-```
-
-Or step by step with `make`:
-
-```bash
-make crawl   # Step 1 — crawl Wikipedia
-make ner     # Step 2 — extract entities
-make kg      # Step 3-5 — build ontology, KG, alignment
-make expand  # Step 6 — expand with Wikidata SPARQL
-```
-
-## Run tests
-
-```bash
-source venv/bin/activate
-make test
-```
-
-## Launch the Streamlit interface
+Three tabs:
+- **RAG Demo** — ask a question in natural language, get an answer from the KG
+- **Overview & Stats** — triple counts, entity distribution, KGE metrics, t-SNE embeddings
+- **Graph Explorer** — interactive network visualization
 
 ```bash
 source venv_ui/bin/activate
@@ -57,33 +29,53 @@ streamlit run src/app/streamlit_app.py
 # → http://localhost:8501
 ```
 
-## Launch the Jupyter notebook
+> Requires [Ollama](https://ollama.com) running locally with Mistral 7B for the RAG tab:
+> `ollama serve` then `ollama pull mistral`
+
+## Run the Full Pipeline
 
 ```bash
-source venv_ui/bin/activate
-jupyter notebook notebooks/jazz_kg_exploration.ipynb
+source venv/bin/activate
+bash run_pipeline.sh
 ```
 
-## Project structure
+Or step by step:
+
+```bash
+make crawl    # Step 1 — crawl Wikipedia
+make ner      # Step 2 — extract entities
+make kg       # Step 3–5 — ontology, KG, alignment
+make expand   # Step 6 — expand with Wikidata SPARQL
+```
+
+## Installation
+
+```bash
+# Pipeline
+python3 -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+python3 -m spacy download en_core_web_trf
+
+# UI (requires Python 3.12)
+python3.12 -m venv venv_ui && source venv_ui/bin/activate
+pip install -r requirements_ui.txt
+```
+
+## Tests
+
+```bash
+source venv/bin/activate && make test   # 56 tests
+```
+
+## Project Structure
 
 ```
-jazz-kg-project/
-├── src/
-│   ├── crawl/          # Wikipedia crawler
-│   ├── ie/             # NER pipeline (spaCy)
-│   ├── kg/             # Ontology, KG builder, alignment, expansion
-│   ├── kge/            # Knowledge Graph Embeddings (TransE)
-│   ├── reason/         # OWL reasoning
-│   ├── rag/            # RAG pipeline
-│   ├── app/            # Streamlit interface
-│   └── orchestrator/   # Pipeline orchestrator + validator
-├── data/               # Generated data (gitignored)
-├── kg_artifacts/       # Generated KG files (gitignored)
-├── notebooks/          # Jupyter exploration notebook
-├── reports/            # Generated charts and HTML graphs
-├── tests/              # pytest test suite
-├── requirements.txt         # Pipeline dependencies
-├── requirements_ui.txt      # UI/visualization dependencies
-├── Makefile
-└── run_pipeline.sh
+src/
+├── crawl/        Wikipedia crawler
+├── ie/           NER & relation extraction
+├── kg/           Ontology, KG builder, Wikidata alignment, SPARQL expansion
+├── kge/          Knowledge Graph Embeddings (TransE, DistMult)
+├── reason/       OWL forward-chaining reasoner
+├── rag/          NL→SPARQL pipeline (Mistral 7B + self-repair)
+└── app/          Streamlit interface
 ```
