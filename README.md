@@ -70,12 +70,33 @@ source venv/bin/activate && make test   # 56 tests
 ## Project Structure
 
 ```
-src/
-├── crawl/        Wikipedia crawler
-├── ie/           NER & relation extraction
-├── kg/           Ontology, KG builder, Wikidata alignment, SPARQL expansion
-├── kge/          Knowledge Graph Embeddings (TransE, DistMult)
-├── reason/       OWL forward-chaining reasoner
-├── rag/          NL→SPARQL pipeline (Mistral 7B + self-repair)
-└── app/          Streamlit interface
+jazz-kg-project/
+├── src/
+│   ├── crawl/          Wikipedia crawler (httpx + trafilatura)
+│   ├── ie/             NER & relation extraction (spaCy)
+│   ├── kg/             Ontology, KG builder, Wikidata alignment, SPARQL expansion
+│   ├── reason/         OWL forward-chaining reasoner
+│   ├── kge/            Knowledge Graph Embeddings (TransE, DistMult)
+│   ├── rag/            NL→SPARQL pipeline (Mistral 7B + self-repair)
+│   ├── app/            Streamlit interface
+│   └── orchestrator/   Full pipeline orchestrator + validator
+├── data/
+│   ├── samples/        Sample data for testing
+│   └── README.md
+├── kg_artifacts/
+│   ├── ontology.ttl    OWL ontology (7 classes, 10+ properties)
+│   ├── initial_kg.ttl  Initial RDF graph
+│   ├── alignment.ttl   Wikidata owl:sameAs links
+│   └── expanded.nt     Expanded graph (~50k triples)
+├── reports/
+│   ├── kge_metrics.json
+│   └── tsne_embeddings.png
+├── notebooks/          Jupyter exploration notebook
+├── tests/              pytest test suite (56 tests)
+├── README.md
+├── requirements.txt
+├── requirements_ui.txt
+├── Makefile
+├── run_pipeline.sh
+└── .gitignore
 ```
