@@ -37,3 +37,6 @@ data/test.txt
 # Pytest / lib
 .pytest_cache/
 lib/
+report.md
+video_script.md
+*.mp4
